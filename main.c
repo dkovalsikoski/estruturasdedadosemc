@@ -43,9 +43,30 @@ void insere(int item, int pos, Lista *lista){
     if (pos > lista->tamanho){
         printf("Impossível inserir pois posição <%d> é maior que tamanho <%d>");
     }else {
-        while(){
-
+        int aux = 1;
+        TipoNode *node;
+        node = NULL;
+        //se for no primeiro precisa de um tratamento diferente... senao pode ser como está o loop abaixo
+        while(aux < pos){
+            node = node->prox;
+            aux++;
         }
+
+
+        //insere no primeiro elemento da lista
+        if (node == NULL){
+            node = malloc(sizeof(TipoNode));
+            node->prox = lista->inicio;
+            lista->inicio = node;
+        }
+
+        TipoNode *novo = malloc(sizeof(TipoNode));
+        novo->valor = item;
+        TipoNode *aux_node = node->prox; //segmentationfault aqui
+        node->prox = novo;
+        novo->prox = aux_node;
+
+        lista->tamanho++;
     }
 }
 
@@ -65,5 +86,6 @@ int main() {
     insereFim(3, &lista);
     insereFim(-1, &lista);
     insereFim(5, &lista);
+    insere(10,2,&lista);
     imprime(lista);
 }
