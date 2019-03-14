@@ -43,9 +43,47 @@ void insere(int item, int pos, Lista *lista){
     if (pos > lista->tamanho){
         printf("Impossível inserir pois posição <%d> é maior que tamanho <%d>");
     }else {
-        while(){
+        TipoNode *novo = malloc(sizeof(TipoNode));
+        novo->valor = item;
+        novo->prox = NULL;
 
+        if(pos==1){
+            novo->prox = lista->inicio;
+            lista->inicio = novo;
+        }else{
+            int aux = 2;
+            TipoNode *node;
+            node = lista->inicio;
+
+            while(aux < pos){
+                node = node->prox;
+                aux++;
+            }
+
+            novo->prox = node->prox;
+            node->prox = novo;
+            lista->tamanho++;
         }
+    }
+}
+
+void remover(int pos, Lista *lista){
+    if(pos == 1){
+        TipoNode *n = lista->inicio;
+        lista->inicio = lista->inicio->prox;
+        lista->tamanho--;
+        free(n);
+    }else{
+        int aux = 2;
+        TipoNode *node = lista->inicio;
+        while (aux < pos){
+            aux = aux + 1;
+            node = node->prox;
+        }
+
+        TipoNode *remover = node->prox;
+        node->prox = node->prox->prox;
+        free(remover);
     }
 }
 
@@ -65,5 +103,9 @@ int main() {
     insereFim(3, &lista);
     insereFim(-1, &lista);
     insereFim(5, &lista);
+    insere(10,2,&lista);
+    insere(11,1,&lista);
+    imprime(lista);
+    remover(3, &lista);
     imprime(lista);
 }
