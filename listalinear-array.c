@@ -1,77 +1,87 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TAMANHO_MAX 1000
-#define INICIO 0
-#define NAO_INICIALIZADO -1
+typedef struct Node{
+        int valor;
+        struct Node *prox;
+}no;
 
-typedef struct tipo_lista {
-    int valores[TAMANHO_MAX];
-    int fim;
-} TipoLista;
+typedef struct Lista{
+        no *inicio;
+        no *fim;
+}lista;
 
-void FLVazia(TipoLista *lista){
-    lista->fim = NAO_INICIALIZADO;
+void lista_vazio(lista *lista){
+    lista->inicio = NULL;
+    lista->fim = NULL;
 }
 
-int vazia(TipoLista lista){
-    return lista.fim == NAO_INICIALIZADO;
+void insere_lista_vazia(lista *lista, int valor){
+    //aloca espaço para o novo nó
+    lista->inicio=malloc(sizeof(no));
+    //define o ponteiro lista inicio para nulo
+    lista->inicio->prox=NULL;
+    //recebe o valor
+    lista->inicio->valor=valor;
+    //diz que o lista fim é o mesmo que o incio porque só tem ele
+    lista->fim=lista->inicio;
 }
 
-void insereFim(int item, TipoLista *lista){
-    lista->fim = lista->fim + 1;
-    lista->valores[lista->fim] = item;
-}
-
-void insere(int item, int pos, TipoLista *lista){
-    int aux;
-    for (int i=lista->fim+1; i>pos; i--){
-        lista->valores[i] = lista->valores[i-1];
-    }
-    lista->valores[pos] = item;
-    lista->fim = lista->fim + 1;
-}
-
-void imprime(TipoLista lista){
-    if (!vazia(lista)){
-        int index = INICIO;
-        int value = lista.valores[index];
-        while (index <=  lista.fim){
-            index = index + 1;
-            printf("%d ", value);
-            value = lista.valores[index];
-        }
-        printf("\n");
+void insere_inicio(lista *lista, int valor){
+    if(lista->inicio==NULL){
+        insere_lista_vazia(lista, valor);
     } else {
-        printf("Lista vazia\n");
+        //aloca espaço pro novo nó
+        no *novoNo = malloc(sizeof(no));
+        //define um valor
+        novoNo->valor=valor;
+        //novo nó aponta para lista inicio
+        novoNo->prox=lista->inicio;
+        //define o novo nó como lista inicio
+        lista->inicio=novoNo;
+    }
+}
+void insere_fim(lista *lista, int valor){
+    if(lista->inicio==NULL){
+        insere_lista_vazia(lista,valor);
+    } else {
+        //aloca o novo nó
+        no *novoNo = malloc(sizeof(no));
+        novoNo->prox = NULL;
+        novoNo->valor = valor;
+
+        //cria um ponteiro de verificção que aponta para o inicio da lista
+        no *tmp = lista->inicio->prox;
+
+        while (tmp->prox != NULL)
+            //enquanto a parada aqui não for nula ele percorre
+            tmp = tmp->prox;
+        tmp->prox = novoNo;
+        lista->fim->prox = novoNo;
+        lista->fim = novoNo;
+
     }
 }
 
-int retira(int pos, TipoLista *lista){
-    int valor = lista->valores[pos];
-    for (int i=pos; i < lista->fim; i++){
-        lista->valores[pos]=lista->valores[pos+1];
+
+
+void imprime_lista(lista lista){
+    no *tmp = lista.inicio;
+    while(tmp!=NULL){
+        printf("%d\n", tmp->valor);
+        tmp=tmp->prox;
+
     }
-    lista->fim = lista->fim - 1;
-    return valor;
 }
 
-int main(){
-    TipoLista lista;
-    FLVazia(&lista);
-    if (vazia(lista)){
-        printf("A lista está vazia.\n");
-    }else{
-        printf("A lista não está vazia.\n");
-    }
 
-    insereFim(10, &lista);
-    insereFim(1, &lista);
-    insereFim(100, &lista);
-    insere(99,1,&lista);
-    imprime(lista);
-    insere(88,0,&lista);
-    imprime(lista);
-    retira(3, &lista);
-    imprime(lista);
+int main()
+{
+    lista lista;
+    lista_vazio(&lista);
+    insere_inicio(&lista, 3);
+    insere_inicio(&lista,4);
+    insere_fim(&lista, 7);
+    imprime_lista(lista);
+    return 0;
 }
